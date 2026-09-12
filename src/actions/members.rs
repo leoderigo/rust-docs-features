@@ -1,66 +1,10 @@
-use std::fs;
 use std::io::{Write, stdin, stdout};
-use serde_json;
-use serde::{Deserialize, Serialize};
 
-const MEMBER_TABLE_PATH: &str = "database/member.json";
-
-fn get_members() -> Vec<Member> {
-    let result = fs::read_to_string(MEMBER_TABLE_PATH);
-
-    match result {
-        Ok(result) => {
-            let members: Vec<Member> = match serde_json::from_str(&result) {
-                Ok(result) => result,
-                _ => {
-                    println!("Não foi possível converter os dados");
-                    vec![]
-                }
-            };
-
-            return members;
-        },
-        Err(err) => {
-            println!("Não foi possível ler os dados");
-            println!("===");
-            println!("{}", err);
-            println!("===");
-            return vec![];
-        }
-    }
-}
-
-fn insert_member(nickname: String, email: String) {
-    let mut members = get_members();
-    let new_member = Member { email: email, nickname: nickname };
-
-    let found = members.iter().enumerate().find(|item| item.1.email == new_member.email);
-    match found {
-        Some((index, _)) => {
-            members[index] = new_member;
-        },
-        None => members.push(new_member)
-    };
-
-    match serde_json::to_string(&members) {
-        Ok(text) => {
-            match fs::write(MEMBER_TABLE_PATH, text) {
-                Err(err) => println!("Não foi possível escrever no json: {}", err),
-                _ => ()
-            };
-        },
-        Err(err) => println!("Falha ao salvar: {}", err)
-    };
-}
-
-#[derive(Deserialize, Serialize)]
-struct Member {
-    nickname: String,
-    email: String,
-}
+mod member_table;
+use member_table::Member;
 
 pub fn list_members() {
-    let member_list = get_members();
+    let member_list = member_table::get_members();
 
     println!("==============");
     for (index, member) in member_list.iter().enumerate() {
@@ -108,7 +52,28 @@ pub fn add_member() {
         break;
     }
 
-    insert_member(new_member.nickname, new_member.email);
+    member_table::insert_member(new_member.nickname, new_member.email);
+}
+
+pub fn remove_member() {
+    loop {
+        print!("Para remover o membro, digite o email: ");
+        if let Err(_) = stdout().flush() {
+            println!("Erro no flush");
+            break;
+        }
+
+        let mut email: String = String::new();
+        if let Err(_) = stdin().read_line(&mut email) {
+            println!("Erro ao ler email");
+        };
+
+        email = String::from(email.trim());
+
+        member_table::delete_member(email);
+        
+        break;
+    }
 }
 
 pub enum MembersAction {

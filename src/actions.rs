@@ -21,8 +21,6 @@ pub mod system {
 
     pub fn check_system() {
         loop {
-            println!("Bem vindo LittleFish");
-            println!("");
             println!("1- Verificar campeonato");
             println!("2- Verificar membros");
             println!("0- Sair");
@@ -57,6 +55,7 @@ pub mod system {
             match action {
                 MembersAction::List => members::list_members(),
                 MembersAction::Add => members::add_member(),
+                MembersAction::Delete => members::remove_member(),
                 MembersAction::GoBack => should_go_back = true,
                 _ => ()
             };
