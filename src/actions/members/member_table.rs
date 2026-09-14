@@ -8,6 +8,7 @@ const MEMBER_TABLE_PATH: &str = "database/member.json";
 pub struct Member {
     pub nickname: String,
     pub email: String,
+    pub team: Option<String>
 }
 
 pub fn get_members() -> Vec<Member> {
@@ -35,9 +36,9 @@ pub fn get_members() -> Vec<Member> {
     }
 }
 
-pub fn insert_member(nickname: String, email: String) {
+pub fn insert_member(nickname: String, email: String, team: Option<String>) {
     let mut members = get_members();
-    let new_member = Member { email: email, nickname: nickname };
+    let new_member = Member { email: email, nickname: nickname, team: team };
 
     let found = members.iter().enumerate().find(|item| item.1.email == new_member.email);
     match found {

@@ -1,0 +1,14 @@
+[
+    {
+        "team_name": "Atecubanos Roma",
+        "kills": 12,
+        "place": 1,
+        "match_uid": "1"
+    },
+    {
+        "team_name": "Primatas",
+        "kills": 3,
+        "place": 2,
+        "match_uid": "1"
+    }
+]

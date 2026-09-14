@@ -14,7 +14,7 @@ pub fn list_members() {
 }
 
 pub fn add_member() {
-    let mut new_member: Member = Member { nickname: String::new(), email: String::new() };
+    let mut new_member: Member = Member { nickname: String::new(), email: String::new(), team: None };
     loop {
         let mut nickname: String = String::new();
         print!("Qual o nickname do membro? ");
@@ -51,8 +51,27 @@ pub fn add_member() {
         new_member.email = email;
         break;
     }
+    loop {
+        let mut team: String = String::new();
+        print!("Qual a equipe do membro? ");
+        match stdout().flush() {
+            Err(_) => continue,
+            _ => ()
+        };
+        match stdin().read_line(&mut team) {
+            Err(_) => continue,
+            _ => ()
+        };
+        team = String::from(team.trim());
+        if "0".as_bytes() == team.as_bytes() {
+            return;
+        }
+        
+        new_member.team = if team.len() == 0 { None } else { Some(team) };
+        break;
+    }
 
-    member_table::insert_member(new_member.nickname, new_member.email);
+    member_table::insert_member(new_member.nickname, new_member.email, new_member.team);
 }
 
 pub fn remove_member() {

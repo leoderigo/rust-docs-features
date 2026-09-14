@@ -1,0 +1,14 @@
+[
+    {
+        "uid": "1",
+        "status": "completed",
+        "victoryreason": "battle",
+        "tournament": "Split 2026.1"
+    },
+    {
+        "uid": "2",
+        "status": "completed",
+        "victoryreason": "battle",
+        "tournament": ""
+    }
+]
