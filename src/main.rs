@@ -1,5 +1,5 @@
 use std::{env, error, fs, process};
-use testing_the_docs::search;
+use testing_the_docs::{search, search_case_insensitive};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -19,7 +19,13 @@ fn run(config: Config) -> Result<(), Box<dyn error::Error>> {
     println!("");
     let contents = fs::read_to_string(config.filepath)?;
 
-    for line in search(&config.query, &contents) {
+    let results = if config.ignore_case {
+        search_case_insensitive(&config.query, &contents)
+    } else {
+        search(&config.query, &contents)
+    };
+
+    for line in results {
         println!("{line}");
     }
  
@@ -29,17 +35,25 @@ fn run(config: Config) -> Result<(), Box<dyn error::Error>> {
 struct Config {
     query: String,
     pokemon: String,
-    filepath: String
+    filepath: String,
+    ignore_case: bool
 }
 
 impl Config {
     fn build(args: &[String]) -> Result<Self, &str> {
-        let (query, pokemon) = match args.len() {
-            3 => {
-                (args[1].clone(), args[2].clone())
-            },
-            _ => { return Err("Wrong number of arguments"); }
-        };
-        Ok(Config { pokemon: pokemon.clone(), query: query, filepath: format!("entries/{}.txt", pokemon) })
+        if args.len() < 3 {
+            return Err("Not enough arguments");
+        }
+
+        let query = args[1].clone();
+        let pokemon = args[2].clone();
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
+        Ok(Config {
+            pokemon: pokemon.clone(),
+            query: query,
+            filepath: format!("entries/{}.txt", pokemon),
+            ignore_case: ignore_case
+        })
     }
 }
