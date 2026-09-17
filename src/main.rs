@@ -4,12 +4,12 @@ use testing_the_docs::{search, search_case_insensitive};
 fn main() {
     let args: Vec<String> = env::args().collect();
     let config= Config::build(&args).unwrap_or_else(|err| {
-        println!("Problem building configuration file: {}", err);
+        eprintln!("Problem building configuration file: {}", err);
         process::exit(1);
     });
     
     if let Err(err) = run(config) {
-        println!("Error during the execution of the application: {}", err);
+        eprintln!("Error during the execution of the application: {}", err);
         process::exit(1);
     };
 }
