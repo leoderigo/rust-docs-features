@@ -1,0 +1,22 @@
+Ruby::BRELOOM closes in on its foe with light and sprightly footwork, then throws punches with its stretchy arms. This POKéMON’s fighting technique puts boxers to shame.
+Sapphire::The seeds ringing BRELOOM’s tail are made of hardened toxic spores. It is horrible to eat the seeds. Just taking a bite of this POKéMON’s seed will cause your stomach to rumble.
+FireRed::The seeds on its tail are made of toxic spores. It knocks out foes with quick, virtually invisible punches.
+LeafGreen::The seeds on its tail are made of toxic spores. It knocks out foes with quick, virtually invisible punches.
+Emerald::It scatters spores from holes in the cap on its head. It loves warm and humid climates. It feeds on trees and plants in fields and forests.
+Diamond::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+Peal::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+Platinum::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+HeartGold::It scatters poisonous spores and throws powerful punches while its foe is hampered by inhaled spores.
+SoulSilver::It scatters poisonous spores and throws powerful punches while its foe is hampered by inhaled spores.
+Black::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+White::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+Black 2::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+White 2::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+X::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+Y::It scatters poisonous spores and throws powerful punches while its foe is hampered by inhaled spores.
+Omega Ruby::Breloom closes in on its foe with light and sprightly footwork, then throws punches with its stretchy arms. This Pokémon’s fighting technique puts boxers to shame.
+Alpha Sapphire::The seeds ringing Breloom’s tail are made of hardened toxic spores. It is horrible to eat the seeds. Just taking a bite of this Pokémon’s seed will cause your stomach to rumble.
+Brilliant Diamond::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+Shining Pearl::Its short arms stretch when it throws punches. Its technique is equal to that of pro boxers.
+Scarlet::It scatters poisonous spores and throws powerful punches while its foe is hampered by inhaled spores.
+Violet::The seeds on its tail are made of toxic spores. It knocks out foes with quick, virtually invisible punches.
