@@ -1,14 +1,18 @@
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn search<'a>(
+    query: &str,
+    contents: &'a str
+) -> impl Iterator<Item = &'a str> {
     contents.lines()
-        .filter(|line| line.contains(query))
-        .collect()
+        .filter(move |line| line.contains(query))
 }
 
-pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let query = &query.to_lowercase(); 
+pub fn search_case_insensitive<'a>(
+    query: &str,
+    contents: &'a str
+) -> impl Iterator<Item = &'a str> {
+    let query = query.to_lowercase(); 
     contents.lines()
-        .filter(|lines| lines.to_lowercase().contains(query))
-        .collect()
+        .filter(move |lines| lines.to_lowercase().contains(&query))
 }
 
 #[cfg(test)]
@@ -24,7 +28,10 @@ Or even here.";
         let query = "pokemons";
         let contents = DEFAULT_TEXT;
 
-        assert_eq!(vec!["Here, there are no pokemons."], search(query, contents));
+        let mut results = search(query, contents);
+
+        vec!["Here, there are no pokemons."].into_iter()
+            .for_each(|line| assert_eq!(line, results.next().unwrap()));
     }
 
     #[test]
@@ -32,6 +39,9 @@ Or even here.";
         let query = "no";
         let contents = DEFAULT_TEXT;
 
-        assert_eq!(vec!["Here, there are no pokemons.", "Nor here."], search_case_insensitive(query, contents));
+        let mut results = search_case_insensitive(query, contents);
+
+        vec!["Here, there are no pokemons.", "Nor here."].into_iter()
+            .for_each(|line| assert_eq!(line, results.next().unwrap()));
     }
 }
