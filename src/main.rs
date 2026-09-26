@@ -1,9 +1,8 @@
-use std::{env, error, fs, process};
+use std::{env, error, fs, process, slice::Iter};
 use testing_the_docs::{search, search_case_insensitive};
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let config= Config::build(&args).unwrap_or_else(|err| {
+    let config= Config::build(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem building configuration file: {}", err);
         process::exit(1);
     });
@@ -15,19 +14,19 @@ fn main() {
 }
 
 fn run(config: Config) -> Result<(), Box<dyn error::Error>> {
-    println!("Searching for '\"{}\" in {} pokedex entry", config.query, config.pokemon);
+    println!("Searching for \"{}\" in {} pokedex entry", config.query, config.pokemon);
     println!("");
     let contents = fs::read_to_string(config.filepath)?;
 
-    let results = if config.ignore_case {
-        search_case_insensitive(&config.query, &contents)
+    if config.ignore_case {
+        for line in search_case_insensitive(&config.query, &contents) {
+            println!("{line}");
+        }
     } else {
-        search(&config.query, &contents)
+        for line in search(&config.query, &contents) {
+            println!("{line}");
+        }
     };
-
-    for line in results {
-        println!("{line}");
-    }
  
     Ok(())
 }
@@ -40,19 +39,27 @@ struct Config {
 }
 
 impl Config {
-    fn build(args: &[String]) -> Result<Self, &str> {
-        if args.len() < 3 {
-            return Err("Not enough arguments");
-        }
+    fn build(
+        mut args: impl Iterator<Item = String>
+    ) -> Result<Self, &'static str> {
+        args.next();
 
-        let query = args[1].clone();
-        let pokemon = args[2].clone();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Did not get a query string")
+        };
+
+        let pokemon = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Did not get a pokemon name")
+        };
+
         let ignore_case = env::var("IGNORE_CASE").is_ok();
 
         Ok(Config {
-            pokemon: pokemon.clone(),
-            query: query,
             filepath: format!("entries/{}.txt", pokemon),
+            pokemon: pokemon,
+            query: query,
             ignore_case: ignore_case
         })
     }
