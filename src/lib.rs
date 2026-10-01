@@ -8,6 +8,6 @@ pub async fn get_page_title(url: &String) -> Result<(&String, Option<String>), S
     let first_title = html.select_first("title");
     match first_title {
         None => return Ok((url, None)),
-        Some(title) => return Ok((url, Some(title.html())))
+        Some(title) => return Ok((url, Some(title.inner_html())))
     }
 }

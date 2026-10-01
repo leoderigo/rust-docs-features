@@ -47,7 +47,7 @@ fn get_urls(mut args: impl Iterator<Item = String>) -> Result<URLs, &'static str
     };
     let second = args.next();
     if let None = second {
-        return Err("Need more one URL")
+        return Err("Need one more URL")
     };
 
     Ok(URLs(first.unwrap(), second.unwrap()))
