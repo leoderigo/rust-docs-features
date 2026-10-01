@@ -18,18 +18,13 @@ async fn run() -> String {
     };
     // get page title
     let result = trpl::select(
-        get_page_title(&urls.0),
-        get_page_title(&urls.1)
+        get_page_title(urls.0),
+        get_page_title(urls.1)
     ).await;
 
-    let result = match result {
+    let (url, title) = match result {
         trpl::Either::Left(a) => a,
         trpl::Either::Right(b) => b
-    };
-
-    let (url, title) = match result {
-        Err(err) => return format!("Could not get page title: {err}"),
-        Ok(result) => result
     };
 
     // print messages
