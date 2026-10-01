@@ -1,47 +1,13 @@
-pub fn search<'a>(
-    query: &str,
-    contents: &'a str
-) -> impl Iterator<Item = &'a str> {
-    contents.lines()
-        .filter(move |line| line.contains(query))
-}
+use trpl::get;
+use trpl::Html;
 
-pub fn search_case_insensitive<'a>(
-    query: &str,
-    contents: &'a str
-) -> impl Iterator<Item = &'a str> {
-    let query = query.to_lowercase(); 
-    contents.lines()
-        .filter(move |lines| lines.to_lowercase().contains(&query))
-}
+pub async fn get_page_title(url: &String) -> Result<(&String, Option<String>), String> {
+    let data = get(url).await.text().await;
+    let html = Html::parse(&data);
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    const DEFAULT_TEXT: &str = "\
-Here, there are no pokemons.
-Nor here.
-Or even here.";
-
-    #[test]
-    fn case_sensitive() {
-        let query = "pokemons";
-        let contents = DEFAULT_TEXT;
-
-        let mut results = search(query, contents);
-
-        vec!["Here, there are no pokemons."].into_iter()
-            .for_each(|line| assert_eq!(line, results.next().unwrap()));
-    }
-
-    #[test]
-    fn case_incensitive() {
-        let query = "no";
-        let contents = DEFAULT_TEXT;
-
-        let mut results = search_case_insensitive(query, contents);
-
-        vec!["Here, there are no pokemons.", "Nor here."].into_iter()
-            .for_each(|line| assert_eq!(line, results.next().unwrap()));
+    let first_title = html.select_first("title");
+    match first_title {
+        None => return Ok((url, None)),
+        Some(title) => return Ok((url, Some(title.html())))
     }
 }
