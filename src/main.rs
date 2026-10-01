@@ -1,66 +1,51 @@
-use std::{env, error, fs, process, slice::Iter};
-use testing_the_docs::{search, search_case_insensitive};
+use std::env;
+use trpl::block_on;
+
+use testing_the_docs::get_page_title;
 
 fn main() {
-    let config= Config::build(env::args()).unwrap_or_else(|err| {
-        eprintln!("Problem building configuration file: {}", err);
-        process::exit(1);
-    });
-    
-    if let Err(err) = run(config) {
-        eprintln!("Error during the execution of the application: {}", err);
-        process::exit(1);
-    };
+    let result = block_on(run());
+    println!("{result}");
 }
 
-fn run(config: Config) -> Result<(), Box<dyn error::Error>> {
-    println!("Searching for \"{}\" in {} pokedex entry", config.query, config.pokemon);
-    println!("");
-    let contents = fs::read_to_string(config.filepath)?;
-
-    if config.ignore_case {
-        for line in search_case_insensitive(&config.query, &contents) {
-            println!("{line}");
-        }
-    } else {
-        for line in search(&config.query, &contents) {
-            println!("{line}");
+async fn run() -> String {
+    // get args
+    let urls = match get_urls(env::args()) {
+        Ok(urls) => urls,
+        Err(err) => {
+            return format!("It was not possible to get the urls: {err}");
         }
     };
- 
-    Ok(())
-}
+    // get page title
+    let result = trpl::select(
+        get_page_title(urls.0),
+        get_page_title(urls.1)
+    ).await;
 
-struct Config {
-    query: String,
-    pokemon: String,
-    filepath: String,
-    ignore_case: bool
-}
+    let (url, title) = match result {
+        trpl::Either::Left(a) => a,
+        trpl::Either::Right(b) => b
+    };
 
-impl Config {
-    fn build(
-        mut args: impl Iterator<Item = String>
-    ) -> Result<Self, &'static str> {
-        args.next();
-
-        let query = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Did not get a query string")
-        };
-
-        let pokemon = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Did not get a pokemon name")
-        };
-
-        let ignore_case = env::var("IGNORE_CASE").is_ok();
-
-        Ok(Config {
-            filepath: format!("entries/{}.txt", pokemon),
-            pokemon: pokemon,
-            query: query,
-            ignore_case: ignore_case
-        })
+    // print messages
+    match title {
+        None => format!("URL {url} has no title"),
+        Some(title) => format!("URL {url} has the following title: {title}")
     }
 }
+
+fn get_urls(mut args: impl Iterator<Item = String>) -> Result<URLs, &'static str> {
+    args.next();
+    let first = args.next();
+    if let None = first {
+        return Err("Need two URLs")
+    };
+    let second = args.next();
+    if let None = second {
+        return Err("Need one more URL")
+    };
+
+    Ok(URLs(first.unwrap(), second.unwrap()))
+}
+
+struct URLs (String, String);
